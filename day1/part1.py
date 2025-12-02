@@ -1,6 +1,5 @@
 def parse(raw_input):
     lines = raw_input.split("\n")[:-1]
-    move = []
     for line in lines:
         dir = 1 if line[0] == "R" else -1
         dis = int(line[1:])
