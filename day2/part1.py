@@ -30,14 +30,14 @@ def dupe_num(num):
     return num
 
 
-def get_half_bound(id_min, max_mode=0):
-    min_len = get_len(id_min)
+def get_half_bound(id_bound, max_mode=0):
+    bound_len = get_len(id_bound)
 
-    if min_len % 2:
-        min_half_len = (min_len - 1) / 2
-        return 10 ** min_half_len - max_mode
+    if bound_len % 2:
+        bound_half_len = (bound_len - 1) / 2
+        return 10 ** bound_half_len - max_mode
 
-    half1, half2 = split_num(id_min, min_len)
+    half1, half2 = split_num(id_bound, bound_len)
 
     if max_mode:
         return half1 - (half2 < half1)
