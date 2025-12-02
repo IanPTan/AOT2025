@@ -53,11 +53,7 @@ if __name__ == "__main__":
         min_half = get_half_bound(id_min, 0)
         max_half = get_half_bound(id_max, 1)
 
-        #print(id_min, id_max, min_half, max_half)
         for i in range(int(min_half), int(max_half) + 1):
-            num = dupe_num(i)
-            #print(num)
-            invalid_sum += num
-        #input()
+            invalid_sum += dupe_num(i)
 
     print(invalid_sum)
