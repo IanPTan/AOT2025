@@ -5,8 +5,9 @@ def parse(raw_input):
     id_ranges = []
     while lines[i] != "":
         id_min, id_max = map(int, lines[i].split("-"))
-        add_range(id_ranges, id_min, id_max)
+        id_ranges.append([id_min, id_max])
         i += 1
+    id_ranges = jank_merge(id_ranges)
 
     i += 1
     item_ids = []
@@ -18,34 +19,51 @@ def parse(raw_input):
     return id_ranges, item_ids
 
 
-def scan_ranges(id_ranges, id):
+def scan_ranges(id_ranges, id, ignore=-1):
     for i, (id_min, id_max) in enumerate(id_ranges):
-        if id_min <= id <= id_max:
+        if id_min <= id <= id_max and i != ignore:
             return i
 
     return None
 
 
-def add_range(id_ranges, lower, upper):
-    lower_i = scan_ranges(id_ranges, lower)
-    upper_i = scan_ranges(id_ranges, upper)
+def grow_range(id_ranges, lower, upper):
+    i = 0
+    while i < len(id_ranges):
+        id_min, id_max = id_ranges[i]
 
-    if lower_i == None and upper_i == None:
-        id_ranges.append([lower, upper])
-        return
+        if id_max < lower or id_min > upper:
+            i += 1
+            continue
 
-    if lower_i != None and upper_i != None and lower_i == upper_i:
-        return
+        id_ranges.pop(i)
 
-    if lower_i != None:
-        lower = id_ranges.pop(lower_i)[0]
+        if id_min < lower:
+            lower = id_min
 
-    if upper_i != None:
-        if lower_i != None and lower_i < upper_i:
-            upper_i -= 1
-        upper = id_ranges.pop(upper_i)[1]
+        if id_max > upper:
+            upper = id_max
 
-    id_ranges.append([lower, upper])
+    return lower, upper
+
+
+def merge_ranges(id_ranges):
+    merged_id_ranges = []
+
+    while len(id_ranges) > 0:
+        lower, upper = id_ranges.pop(0)
+        lower, upper = grow_range(id_ranges, lower, upper)
+        merged_id_ranges.append([lower, upper])
+
+    return merged_id_ranges
+
+
+def jank_merge(id_ranges):
+    old_len = -1
+    while old_len != len(id_ranges):
+        old_len = len(id_ranges)
+        id_ranges = merge_ranges(id_ranges)
+    return id_ranges
 
 
 if __name__ == "__main__":
